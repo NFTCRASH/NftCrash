@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#101a2d">
+<title>NFTCrashBot</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#0c1425;--panel:#15233b;--panel2:#1c2d49;--gold:#ffc928;--blue:#32c8ff;--muted:#91a6c5;--green:#51e39a;--pink:#ff5bd6}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -20%,#24456c 0,#0c1425 42%);color:#f4f7ff;font-family:Inter,system-ui,Arial,sans-serif;min-height:100vh}
+button{font:inherit;border:0;cursor:pointer;color:inherit}.app{max-width:540px;margin:auto;padding:16px 15px 92px}
+.top{display:flex;align-items:center;justify-content:space-between;margin:4px 0 16px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:19px;letter-spacing:.2px}.logo{width:43px;height:43px;border-radius:15px;background:linear-gradient(140deg,#ffd34c,#ff9e21 48%,#2dcaff);display:grid;place-items:center;font-size:24px;box-shadow:0 5px 22px #ffc92833}
+.pill{background:#1c2e49;border:1px solid #345071;border-radius:30px;padding:9px 12px;color:#ffe18a;font-weight:800;font-size:13px}
+.hero{background:linear-gradient(135deg,#1b3455,#17233d 65%,#23375a);border:1px solid #355579;border-radius:24px;padding:18px;position:relative;overflow:hidden;box-shadow:0 12px 35px #0005}
+.hero:after{content:"★";position:absolute;right:14px;top:-23px;font-size:130px;color:#ffffff09;transform:rotate(18deg)}
+.eyebrow{color:var(--blue);font-size:11px;font-weight:900;letter-spacing:1.7px}.hero h1{font-size:26px;line-height:1.08;margin:8px 0}.hero p{color:#b9c9df;font-size:13px;line-height:1.45;margin:0 0 14px;max-width:300px}
+.balance{display:flex;align-items:center;justify-content:space-between;background:#0c172a;border:1px solid #304a6b;border-radius:17px;padding:13px 15px;margin-top:13px}.balance small{display:block;color:var(--muted);font-size:11px}.balance strong{font-size:22px;color:var(--gold)}.balance .coin{font-size:25px}
+.section{display:flex;align-items:center;justify-content:space-between;margin:23px 2px 11px}.section h2{font-size:17px;margin:0}.section span{font-size:11px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.case{background:linear-gradient(160deg,#1b2c48,#121e33);border:1px solid #304a6a;border-radius:19px;padding:13px;min-height:158px;position:relative;overflow:hidden}.case .art{height:76px;display:grid;place-items:center;font-size:47px;text-shadow:0 5px 18px #0008}.case h3{font-size:14px;margin:4px 0}.case p{font-size:11px;color:var(--muted);margin:0 0 10px}.buy{width:100%;padding:10px;border-radius:12px;background:linear-gradient(90deg,#ffd33d,#ffae24);color:#172033;font-size:12px;font-weight:950;box-shadow:0 4px 13px #ffbd2633}.buy:disabled{opacity:.45}
+.featuregrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.feature{background:#172740;border:1px solid #2b4565;border-radius:16px;padding:14px 8px;text-align:center}.feature b{display:block;font-size:23px;margin-bottom:5px}.feature span{font-size:11px;font-weight:800}.feature small{display:block;color:var(--muted);font-size:9px;margin-top:4px}
+.panel{background:#15243b;border:1px solid #2e496b;border-radius:19px;padding:15px}.bar{height:10px;background:#0a1424;border-radius:10px;overflow:hidden;margin:11px 0}.bar i{display:block;height:100%;width:40%;background:linear-gradient(90deg,#27bfff,#ffd02f);border-radius:10px}
+.action{background:linear-gradient(90deg,#27c4ff,#258cff);color:#061629;font-weight:950;border-radius:13px;padding:12px 14px;width:100%;margin-top:8px}.secondary{background:#263c5d;color:#eaf4ff}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#0d182aee;backdrop-filter:blur(14px);border-top:1px solid #2b405c;display:flex;justify-content:center;z-index:5}.navin{width:min(540px,100%);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom))}.nav button{background:transparent;color:#8298b8;font-size:10px;padding:5px 2px}.nav button b{display:block;font-size:20px;margin-bottom:2px}.nav button.active{color:var(--gold)}
+.page{display:none}.page.active{display:block}.notice{color:#8298b8;font-size:10px;line-height:1.4;text-align:center;margin:20px 8px}
+.item{display:flex;align-items:center;gap:12px;padding:11px;background:#1b2d49;border-radius:14px;margin-top:9px}.item .emoji{font-size:30px}.item strong{font-size:13px}.item small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.toast{position:fixed;left:50%;bottom:85px;transform:translateX(-50%);background:#f5c842;color:#172033;padding:11px 16px;border-radius:12px;font-weight:900;font-size:12px;display:none;z-index:9;white-space:nowrap;box-shadow:0 8px 25px #0008}
+@media(max-width:360px){.hero h1{font-size:22px}.app{padding-left:11px;padding-right:11px}.case{padding:10px}}
+</style>
+</head>
+<body>
+<div class="app">
+ <header class="top"><div class="brand"><div class="logo">🐸</div><div>NFT<span style="color:var(--gold)">Crash</span>Bot</div></div><div class="pill">⭐ <span id="topBalance">1 000</span></div></header>
+ <main>
+  <section id="home" class="page active">
+   <div class="hero"><div class="eyebrow">NFT • STARS • GAME</div><h1>Прокачай удачу.<br><span style="color:var(--gold)">Забери свой дроп!</span></h1><p>Открывай кейсы, собирай коллекцию, улучшай предметы и получай награды.</p>
+    <div class="balance"><div><small>ТВОЙ ДЕМО-БАЛАНС</small><strong>⭐ <span id="balance">1 000</span></strong></div><div class="coin">💎</div></div>
+   </div>
+   <div class="section"><h2>🎁 Популярные кейсы</h2><span>Демо-открытие</span></div>
+   <div class="grid" id="cases"></div>
+   <div class="section"><h2>⚡ Игровые режимы</h2><span>Выбирай активность</span></div>
+   <div class="featuregrid">
+    <div class="feature" onclick="go('upgrade')"><b>📈</b><span>Апгрейд</span><small>Улучши предмет</small></div>
+    <div class="feature" onclick="go('farm')"><b>🌾</b><span>Фарм</span><small>Забери бонус</small></div>
+    <div class="feature" onclick="go('craft')"><b>🛠️</b><span>Крафт</span><small>Создай предмет</small></div>
+   </div>
+  </section>
+  <section id="upgrade" class="page">
+   <div class="section"><h2>📈 Апгрейд</h2><span>Рискни улучшить</span></div>
+   <div class="panel"><div style="font-size:42px;text-align:center;margin:8px">💎 ➜ 👑</div><h3 style="margin:0;text-align:center">Улучшение предмета</h3><p style="font-size:12px;color:var(--muted);text-align:center">Демо-шанс успеха — 45%. Попытка стоит 100 ⭐.</p><button class="action" onclick="upgrade()">⚡ Попробовать за 100 ⭐</button></div>
+  </section>
+  <section id="farm" class="page">
+   <div class="section"><h2>🌾 Star Farm</h2><span>Ежедневная награда</span></div>
+   <div class="panel"><div style="font-size:48px;text-align:center">🌟</div><h3 style="text-align:center;margin:4px">Ферма звёзд</h3><p style="font-size:12px;color:var(--muted);text-align:center">Забирай демонстрационный бонус раз в минуту.</p><div class="bar"><i></i></div><button class="action" onclick="farm()">Собрать +50 ⭐</button></div>
+  </section>
+  <section id="craft" class="page">
+   <div class="section"><h2>🛠️ Крафт</h2><span>Объединение</span></div>
+   <div class="panel"><div style="font-size:43px;text-align:center">🧩 + 🧩 = 💠</div><h3 style="text-align:center;margin:5px">Собери редкий предмет</h3><p style="font-size:12px;color:var(--muted);text-align:center">В демо крафт доступен за 150 ⭐.</p><button class="action" onclick="craft()">Создать предмет за 150 ⭐</button></div>
+  </section>
+  <section id="inventory" class="page">
+   <div class="section"><h2>🎒 Инвентарь</h2><span id="count">0 предметов</span></div><div id="items"><div class="panel" style="color:var(--muted);font-size:12px;text-align:center">Пока пусто. Открой первый кейс!</div></div>
+  </section>
+ </main>
+ <p class="notice">NFTCrashBot — демонстрационный прототип. Баланс и предметы хранятся только в этом браузере и не имеют денежной стоимости.</p>
+</div>
+<nav class="nav"><div class="navin">
+ <button class="active" onclick="go('home',this)"><b>🏠</b>Главная</button>
+ <button onclick="go('upgrade',this)"><b>📈</b>Апгрейд</button>
+ <button onclick="go('farm',this)"><b>🌾</b>Фарм</button>
+ <button onclick="go('inventory',this)"><b>🎒</b>Инвентарь</button>
+</div></nav><div class="toast" id="toast"></div>
+<script>
+const tg=window.Telegram?.WebApp; if(tg){tg.ready();tg.expand();tg.setHeaderColor('#101a2d');tg.setBackgroundColor('#0c1425')}
+let balance=Number(localStorage.getItem('nftcb_balance')||1000), items=JSON.parse(localStorage.getItem('nftcb_items')||'[]'), lastFarm=Number(localStorage.getItem('nftcb_farm')||0);
+const cases=[
+ {name:'Стартовый',price:100,emoji:'🎁',desc:'Для первого дропа',rewards:['⭐ 80','💎 Обычный NFT','🪙 Бонус']},
+ {name:'Золотой',price:250,emoji:'🟡',desc:'Больше блеска',rewards:['💎 Золотой NFT','⭐ 200','👑 Редкий NFT']},
+ {name:'Космический',price:500,emoji:'🌌',desc:'Дроп из галактики',rewards:['🚀 Космо NFT','💠 Эпик NFT','⭐ 500']},
+ {name:'Легендарный',price:800,emoji:'👑',desc:'Для охотников за редким',rewards:['🐸 Pepe NFT','👑 Легендарный NFT','💎 Драгоценный NFT']}
+];
+function fmt(n){return Math.floor(n).toLocaleString('ru-RU')}
+function save(){localStorage.setItem('nftcb_balance',balance);localStorage.setItem('nftcb_items',JSON.stringify(items));document.getElementById('balance').textContent=fmt(balance);document.getElementById('topBalance').textContent=fmt(balance);document.getElementById('count').textContent=items.length+' предметов';renderItems()}
+function toast(s){let t=document.getElementById('toast');t.textContent=s;t.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>t.style.display='none',2200);if(tg)tg.HapticFeedback?.notificationOccurred('success')}
+function renderCases(){document.getElementById('cases').innerHTML=cases.map((c,i)=>`<div class="case"><div class="art">${c.emoji}</div><h3>${c.name}</h3><p>${c.desc}</p><button class="buy" onclick="openCase(${i})">Открыть · ⭐ ${c.price}</button></div>`).join('')}
+function openCase(i){let c=cases[i];if(balance<c.price){toast('Не хватает демо-звёзд');return}balance-=c.price;let r=c.rewards[Math.floor(Math.random()*c.rewards.length)];items.unshift({emoji:c.emoji,name:r,case:c.name});save();toast('Выпало: '+r)}
+function renderItems(){let el=document.getElementById('items');el.innerHTML=items.length?items.map(x=>`<div class="item"><div class="emoji">${x.emoji}</div><div><strong>${x.name}</strong><small>Кейс: ${x.case||'Крафт'}</small></div></div>`).join(''):'<div class="panel" style="color:var(--muted);font-size:12px;text-align:center">Пока пусто. Открой первый кейс!</div>'}
+function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');else{let idx={home:0,upgrade:1,farm:2,inventory:3}[id];document.querySelectorAll('.nav button')[idx]?.classList.add('active')}window.scrollTo(0,0)}
+function upgrade(){if(balance<100){toast('Не хватает демо-звёзд');return}balance-=100;if(Math.random()<.45){items.unshift({emoji:'👑',name:'Улучшенный NFT',case:'Апгрейд'});toast('Успех! Предмет улучшен')}else toast('Не получилось — попробуй ещё');save()}
+function farm(){let now=Date.now();if(now-lastFarm<60000){toast('Фарм доступен раз в минуту');return}lastFarm=now;localStorage.setItem('nftcb_farm',lastFarm);balance+=50;save();toast('+50 демо-звёзд собрано!')}
+function craft(){if(balance<150){toast('Не хватает демо-звёзд');return}balance-=150;items.unshift({emoji:'💠',name:'Скрафченный NFT',case:'Крафт'});save();toast('Предмет создан!')}
+renderCases();save();
+</script>
+</body></html>
